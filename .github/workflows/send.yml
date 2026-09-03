@@ -7,9 +7,10 @@ on:
         description: Only verify login and friends without sending
         type: boolean
         default: false
-  schedule:
-    - cron: "30 6 * * *"
-      timezone: "Asia/Shanghai"
+  # schedule:
+  #   - cron: "30 6 * * *"
+  #     timezone: "Asia/Shanghai"
+  # 注释掉 GitHub Actions 的定时任务，使用外部 cron 代替
 
 concurrency:
   group: douyin-daily-sender
