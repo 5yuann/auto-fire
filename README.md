@@ -27,6 +27,7 @@
 - 🧪 **Dry Run 模式**：只验证登录状态和好友定位，不真实发送消息
 - 🔒 **防重复发送**：支持记录发送历史，减少重复触发导致的重复发送
 - 🔔 **钉钉通知**：支持通过钉钉机器人接收任务结果
+- 🔗 **通用 Webhook**：支持企业微信、飞书、Slack、Discord、Telegram 等任意 Webhook 通知
 - 🛡️ **失败诊断**：失败时可保存日志、页面截图和 Playwright Trace
 - 🔐 **登录凭证灵活**：支持 Cookie 或浏览器 Storage State
 - ⏱️ **模拟真人操作**：支持随机发送间隔和输入节奏
@@ -71,6 +72,15 @@ docker compose up -d
 
 > 第一次使用无论选择哪种部署方式，都建议先配置 **1 个账号 + 1 个好友 + 1 条文字消息**，先执行 Dry Run，确认正常后再真实发送和增加其他配置。
 
+## 📢 通知配置
+
+项目支持任务完成后发送通知到多种平台：
+
+- **[通用 Webhook 配置 →](docs/webhook.md)** - 支持企业微信、飞书、Slack、Discord、Telegram 等任意 Webhook 端点
+- **钉钉机器人** - 通过环境变量 `DINGTALK_WEBHOOK` 和 `DINGTALK_SECRET` 配置
+
+通知功能完全可选，不配置不影响消息发送。
+
 ## 🧰 技术栈
 
 | 类别 | 内容 |
@@ -80,7 +90,7 @@ docker compose up -d
 | 定时调度 | GitHub Actions / Docker Cron / systemd Timer / Windows 任务计划程序 |
 | 环境变量 | python-dotenv |
 | 时区 | tzdata |
-| 通知 | 钉钉机器人 Webhook |
+| 通知 | 钉钉机器人 / 通用 Webhook（企业微信、飞书、Slack 等） |
 | 支持平台 | Windows / macOS / Linux / Docker |
 
 主要依赖：
