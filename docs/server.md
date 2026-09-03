@@ -216,7 +216,7 @@ WEBHOOK_TEMPLATE={"chat_id":"YOUR_CHAT_ID","text":"🔥 抖音任务 {task_id}\n
 
 ```bash
 cd /opt/douyin-auto-sender
-sudo -u douyin-sender -H .venv/bin/python test_webhook.py
+sudo -u douyin-sender -H .venv/bin/python scripts/check_webhook.py
 ```
 
 多账号模式下，全局 `.env` 中的通知配置会被各账号继承；如果某个账号需要独立通知，可以在该账号自己的 env 文件中覆盖这些变量。

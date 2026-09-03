@@ -9,7 +9,8 @@ import sys
 from pathlib import Path
 
 # 添加项目根目录到 Python 路径
-sys.path.insert(0, str(Path(__file__).parent))
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
 
 from app.config import load_settings
 from app.models import TargetResult
@@ -76,10 +77,10 @@ def main():
         epilog="""
 示例：
   # 基础测试
-  python test_webhook.py
+  python scripts/check_webhook.py
 
   # 使用自定义 .env 文件
-  python test_webhook.py --env-file .env.local
+  python scripts/check_webhook.py --env-file .env.local
 
 环境变量：
   WEBHOOK_URL          Webhook 接收端 URL（必需）

@@ -237,10 +237,10 @@ WEBHOOK_TEMPLATE={"content":"🔥 **抖音任务 {task_id}**\n\n{status}\n成功
 
 ```bash
 # 在容器外测试
-python test_webhook.py
+python scripts/check_webhook.py
 
 # 或在容器内测试
-docker compose exec douyin-auto-fire python test_webhook.py
+docker compose exec douyin-auto-fire python scripts/check_webhook.py
 ```
 
 通知会包含本次任务模式、成功/失败人数和失败原因。Docker 环境下如果配置的是全局 `.env`，多账号默认都会继承同一个通知配置；如果希望不同账号使用不同通知，可以在对应账号的环境文件里单独覆盖这些变量。

@@ -249,7 +249,7 @@ WEBHOOK_TEMPLATE={"chat_id":"YOUR_CHAT_ID","text":"🔥 抖音任务 {task_id}\n
 #### 测试配置
 
 ```powershell
-python test_webhook.py
+python scripts/check_webhook.py
 ```
 
 多账号模式下，全局 `.env` 的通知配置会被账号继承；如果某个账号需要单独通知，可以在该账号自己的 `.env.account*` 文件中覆盖。
