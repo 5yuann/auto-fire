@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 from collections import defaultdict
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Literal
@@ -98,9 +98,11 @@ class Metrics:
 
     def to_dict(self) -> dict:
         """转换为字典，便于JSON序列化。"""
-        data = asdict(self)
-        # 转换 defaultdict 为普通 dict
-        data["error_counts"] = dict(data["error_counts"])
+        # 不使用 dataclasses.asdict()，因为它无法正确复制 defaultdict，
+        # 在 Python 3.11 上会抛出 TypeError: first argument must be callable or None。
+        # 手动构建字典，将 defaultdict 转为普通 dict 以确保 JSON 可序列化。
+        data = vars(self).copy()
+        data["error_counts"] = dict(self.error_counts)
         return data
 
     def save(self, path: Path):
@@ -147,7 +149,7 @@ class HistoricalMetrics:
     def save(self, path: Path):
         """保存历史指标。"""
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(asdict(self), ensure_ascii=False, indent=2), encoding="utf-8")
+        path.write_text(json.dumps(vars(self).copy(), ensure_ascii=False, indent=2), encoding="utf-8")
 
     @classmethod
     def load(cls, path: Path) -> HistoricalMetrics:
