@@ -2,14 +2,13 @@ name:每日天气推送
 on:
   workflow_dispatch:
   schedule:
-    # UTC 23点 = 北京时间早上7点
+    # UTC23点=北京时间早上7点
     - cron: "0 23 * * *"
 jobs:
   weather:
     runs-on: ubuntu-latest
     env:
       SERVERCHAN_SENDKEY: ${{ secrets.SERVERCHAN_SENDKEY }}
-      WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -18,13 +17,12 @@ jobs:
       - run: |
           python << 'PY'
           import requests, os
-          city = "Kunming"
-          api_key = os.environ["WEATHER_API_KEY"]
-          url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=zh_cn"
-          resp = requests.get(url).json()
-          temp = resp["main"]["temp"]
-          desc = resp["weather"][0]["description"]
-          msg = f"🌤️今日昆明天气：{desc}，温度 {temp}℃"
+          # 彩云公开简易接口，昆明
+          url = "https://wttr.in/Kunming?format=j1"
+          resp = requests.get(url,timeout=15).json()
+          temp = resp["current_condition"][0]["temp_C"]
+          desc = resp["current_condition"][0]["weatherDesc"][0]["value"]
+          msg = f"🌤️昆明今日天气：{desc}，温度 {temp}℃"
           sckey = os.environ["SERVERCHAN_SENDKEY"]
           requests.post(f"https://sctapi.ftqq.com/{sckey}.send", data={
               "title":"🌤️每日天气提醒",
