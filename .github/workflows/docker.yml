@@ -47,7 +47,6 @@ jobs:
         with:
           images: |
             ghcr.io/${{ github.repository }}
-            docker.cnb.cool/1mev/douyin-auto-fire
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=ref,event=tag
