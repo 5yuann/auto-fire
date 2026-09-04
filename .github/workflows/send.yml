@@ -124,7 +124,24 @@ jobs:
           name: douyin-failure-${{ github.run_id }}
           path: artifacts/
           retention-days: 3
-          
+      - name: 获取昆明天气并推送   
+        run: |
+          python << 'PY'
+          import requests, os
+          sckey = os.environ["SERVERCHAN_SENDKEY"]
+          url = "https://wttr.in/Kunming?format=j1"
+          resp = requests.get(url,timeout=15).json()
+          temp = resp["current_condition"][0]["temp_C"]
+          desc = resp["current_condition"][0]["weatherDesc"][0]["value"]
+          msg = f"🌤️昆明今日天气：{desc}，温度 {temp}℃"
+          requests.post(f"https://sctapi.ftqq.com/{sckey}.send", data={
+              "title":"🌤️每日天气提醒",
+              "desp":msg
+          })
+          PY
+        env:
+          SERVERCHAN_SENDKEY: ${{ secrets.SERVERCHAN_SENDKEY }}
+    
 
       - name: Server酱微信任务通知
         if: always()
