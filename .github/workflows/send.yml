@@ -124,8 +124,10 @@ jobs:
           name: douyin-failure-${{ github.run_id }}
           path: artifacts/
           retention-days: 3
+      
       - name: 获取昆明天气并推送   
         run: |
+          pip install requests
           python << 'PY'
           import requests, os
           sckey = os.environ["SERVERCHAN_SENDKEY"]
@@ -142,7 +144,6 @@ jobs:
         env:
           SERVERCHAN_SENDKEY: ${{ secrets.SERVERCHAN_SENDKEY }}
     
-
       - name: Server酱微信任务通知
         if: always()
         run: |
