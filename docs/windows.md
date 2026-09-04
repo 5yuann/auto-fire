@@ -186,7 +186,9 @@ Remove-Item storage-state.json
 
 ---
 
-## 11. 钉钉通知（可选）
+## 11. 消息通知（可选）
+
+### 钉钉机器人
 
 在 `.env` 中填写：
 
@@ -199,7 +201,58 @@ DINGTALK_SECRET=SECxxxx
 
 如果不需要通知，两个值保持为空即可。
 
-多账号模式下，全局 `.env` 的钉钉配置会被账号继承；如果某个账号需要单独机器人，可以在该账号自己的 `.env.account*` 文件中覆盖。
+### 通用 Webhook（企业微信、飞书、Telegram 等）
+
+项目支持向任意 Webhook 端点发送通知，适用于企业微信、飞书、Slack、Discord、Telegram 等平台。
+
+在 `.env` 中添加：
+
+```env
+# 必需：Webhook 地址
+WEBHOOK_URL=https://example.com/webhook
+
+# 可选：自定义消息模板（JSON 格式）
+WEBHOOK_TEMPLATE={"text":"任务 {task_id} {status}"}
+
+# 可选：自定义 HTTP 请求头
+WEBHOOK_HEADERS={"Authorization":"Bearer token"}
+```
+
+#### 配置示例
+
+**企业微信群机器人**
+```env
+WEBHOOK_URL=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=YOUR_KEY
+WEBHOOK_TEMPLATE={"msgtype":"text","text":{"content":"🔥 抖音任务 {task_id}\n\n{status}\n✅ 成功: {success_count}\n❌ 失败: {failed_count}\n\n⏰ {timestamp}"}}
+```
+
+**飞书群机器人**
+```env
+WEBHOOK_URL=https://open.feishu.cn/open-apis/bot/v2/hook/YOUR_KEY
+WEBHOOK_TEMPLATE={"msg_type":"text","content":{"text":"🔥 抖音任务 {task_id}\n\n{status}\n✅ 成功: {success_count}\n❌ 失败: {failed_count}\n\n⏰ {timestamp}"}}
+```
+
+**Telegram Bot**
+```env
+WEBHOOK_URL=https://api.telegram.org/botYOUR_BOT_TOKEN/sendMessage
+WEBHOOK_TEMPLATE={"chat_id":"YOUR_CHAT_ID","text":"🔥 抖音任务 {task_id}\n\n{status}\n✅ 成功: {success_count}\n❌ 失败: {failed_count}\n\n⏰ {timestamp}"}
+```
+
+#### 模板变量
+
+- `{task_id}` - 任务 ID
+- `{status}` - 执行状态
+- `{success_count}` - 成功数量
+- `{failed_count}` - 失败数量
+- `{timestamp}` - 时间戳
+
+#### 测试配置
+
+```powershell
+python scripts/check_webhook.py
+```
+
+多账号模式下，全局 `.env` 的通知配置会被账号继承；如果某个账号需要单独通知，可以在该账号自己的 `.env.account*` 文件中覆盖。
 
 ---
 

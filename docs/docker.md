@@ -151,7 +151,9 @@ RUN_ON_START=false
 
 ---
 
-## 6. 钉钉通知（可选）
+## 6. 消息通知（可选）
+
+### 钉钉机器人
 
 如果希望每次任务结束后通过钉钉接收结果，在 `.env` 中填写：
 
@@ -171,7 +173,77 @@ DINGTALK_SECRET=
 
 即可。
 
-通知会包含本次任务模式、成功/失败人数和失败原因。Docker 环境下如果配置的是全局 `.env`，多账号默认都会继承同一个钉钉机器人；如果希望不同账号使用不同机器人，可以在对应账号的环境文件里单独覆盖这两个变量。
+### 通用 Webhook（企业微信、飞书、Telegram 等）
+
+项目支持向任意 Webhook 端点发送通知，适用于企业微信、飞书、Slack、Discord、Telegram 等平台。
+
+在 `.env` 中添加：
+
+```env
+# 必需：Webhook 地址
+WEBHOOK_URL=https://example.com/webhook
+
+# 可选：自定义消息模板（JSON 格式）
+WEBHOOK_TEMPLATE={"text":"任务 {task_id} {status}"}
+
+# 可选：自定义 HTTP 请求头
+WEBHOOK_HEADERS={"Authorization":"Bearer token"}
+```
+
+#### 配置示例
+
+**企业微信群机器人**
+```env
+WEBHOOK_URL=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=YOUR_KEY
+WEBHOOK_TEMPLATE={"msgtype":"text","text":{"content":"🔥 抖音任务 {task_id}\n\n{status}\n✅ 成功: {success_count}\n❌ 失败: {failed_count}\n\n⏰ {timestamp}"}}
+```
+
+**飞书群机器人**
+```env
+WEBHOOK_URL=https://open.feishu.cn/open-apis/bot/v2/hook/YOUR_KEY
+WEBHOOK_TEMPLATE={"msg_type":"text","content":{"text":"🔥 抖音任务 {task_id}\n\n{status}\n✅ 成功: {success_count}\n❌ 失败: {failed_count}\n\n⏰ {timestamp}"}}
+```
+
+**Telegram Bot**
+```env
+WEBHOOK_URL=https://api.telegram.org/botYOUR_BOT_TOKEN/sendMessage
+WEBHOOK_TEMPLATE={"chat_id":"YOUR_CHAT_ID","text":"🔥 抖音任务 {task_id}\n\n{status}\n✅ 成功: {success_count}\n❌ 失败: {failed_count}\n\n⏰ {timestamp}"}
+```
+
+**Discord 频道**
+```env
+WEBHOOK_URL=https://discord.com/api/webhooks/YOUR_ID/YOUR_TOKEN
+WEBHOOK_TEMPLATE={"content":"🔥 **抖音任务 {task_id}**\n\n{status}\n成功: {success_count} | 失败: {failed_count}\n\n{timestamp}"}
+```
+
+#### 模板变量
+
+可以在 `WEBHOOK_TEMPLATE` 中使用以下变量：
+
+- `{task_id}` - 任务 ID
+- `{status}` - 执行状态
+- `{mode}` - 运行模式
+- `{success_count}` - 成功数量
+- `{failed_count}` - 失败数量
+- `{total_count}` - 总数量
+- `{timestamp}` - 时间戳
+- `{results_json}` - 完整结果
+
+如果不配置 `WEBHOOK_TEMPLATE`，将使用默认格式。
+
+#### 测试配置
+
+可以使用项目自带的测试脚本验证配置：
+
+```bash
+# 在容器外测试
+python scripts/check_webhook.py
+
+# 或在容器内测试
+docker compose exec douyin-auto-fire python scripts/check_webhook.py
+```
+
+通知会包含本次任务模式、成功/失败人数和失败原因。Docker 环境下如果配置的是全局 `.env`，多账号默认都会继承同一个通知配置；如果希望不同账号使用不同通知，可以在对应账号的环境文件里单独覆盖这些变量。
 
 ---
 
